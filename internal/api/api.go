@@ -9,6 +9,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -50,8 +51,21 @@ func (s *Server) Routes() http.Handler {
 	mux.HandleFunc("POST /api/demo/outage", s.proxyOutage)
 
 	if s.StaticDir != "" {
-		if _, err := os.Stat(s.StaticDir); err == nil {
-			mux.Handle("/", http.FileServer(http.Dir(s.StaticDir)))
+		absDir, err := filepath.Abs(s.StaticDir)
+		if err == nil {
+			if info, err := os.Stat(absDir); err == nil && info.IsDir() {
+				fs := http.FileServer(http.Dir(absDir))
+				mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+					// Check if physical file exists
+					target := filepath.Join(absDir, filepath.Clean(r.URL.Path))
+					if fi, err := os.Stat(target); err == nil && !fi.IsDir() {
+						fs.ServeHTTP(w, r)
+						return
+					}
+					// Serve index.html for root or SPA client routes
+					http.ServeFile(w, r, filepath.Join(absDir, "index.html"))
+				})
+			}
 		}
 	}
 	return mux

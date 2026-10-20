@@ -57,11 +57,17 @@ func (s *Server) state() (bool, time.Duration) {
 // Handler returns the HTTP routes.
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
+	mux.HandleFunc("GET /{$}", s.rootInfo)
 	mux.HandleFunc("GET /updates", s.listUpdates)
 	mux.HandleFunc("GET /updates/{id}/batches/{n}", s.getBatch)
 	mux.HandleFunc("GET /admin/outage", s.getOutage)
 	mux.HandleFunc("POST /admin/outage", s.postOutage)
 	return mux
+}
+
+func (s *Server) rootInfo(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.Write([]byte(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Fake Supplier API</title></head><body style="font-family:system-ui,sans-serif;max-width:600px;margin:3rem auto;padding:1rem;line-height:1.6;background:#f8fafc;color:#1e293b;"><div style="background:white;padding:2rem;border-radius:12px;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);border:1px solid #e2e8f0;"><h2 style="margin-top:0;color:#0f172a;">🏕️ Fake Supplier API (Port 8081)</h2><p>This service provides fictional catalog batch updates for demonstration.</p><p style="margin:1.5rem 0;padding:1rem;background:#ecfdf5;border:1px solid #a7f3d0;border-radius:8px;">👉 <b><a href="http://localhost:8080" style="color:#0f9d76;text-decoration:none;font-size:1.1rem;">Click here to open the Web Dashboard (http://localhost:8080)</a></b></p><p style="font-size:0.9rem;color:#64748b;">API Endpoints: <a href="/updates">/updates</a> &bull; <a href="/admin/outage">/admin/outage</a></p></div></body></html>`))
 }
 
 func (s *Server) listUpdates(w http.ResponseWriter, r *http.Request) {
