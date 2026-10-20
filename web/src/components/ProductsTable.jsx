@@ -42,6 +42,7 @@ export default function ProductsTable({ products }) {
         rowKey="sku"
         size="middle"
         dataSource={shown}
+        scroll={{ x: 750 }}
         pagination={{ pageSize: 10 }}
         rowClassName={(p) => (p.status === 'withdrawn' ? 'opacity-60' : '')}
         columns={[

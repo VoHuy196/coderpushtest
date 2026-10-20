@@ -42,6 +42,7 @@ export default function ProblemsTable({ problems, onChanged }) {
         rowKey="id"
         size="middle"
         dataSource={shown}
+        scroll={{ x: 700 }}
         pagination={{ pageSize: 8 }}
         columns={[
           {

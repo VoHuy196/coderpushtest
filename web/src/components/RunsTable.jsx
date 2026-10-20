@@ -80,7 +80,7 @@ export default function RunsTable({ runs, onOpen, onChanged }) {
     {
       title: '',
       render: (_, run) => (
-        <Space onClick={(e) => e.stopPropagation()}>
+        <Space size="small" wrap onClick={(e) => e.stopPropagation()}>
           <Button size="small" onClick={() => onOpen(run)}>
             Details
           </Button>
@@ -111,6 +111,7 @@ export default function RunsTable({ runs, onOpen, onChanged }) {
       size="middle"
       columns={columns}
       dataSource={runs}
+      scroll={{ x: 750 }}
       pagination={{ pageSize: 8 }}
       onRow={(run) => ({ onClick: () => onOpen(run), className: 'cursor-pointer' })}
     />

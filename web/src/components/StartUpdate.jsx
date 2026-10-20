@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { App, Button, Card, Select, Space, Typography } from 'antd'
+import { App, Button, Card, Select, Space, Tooltip, Typography } from 'antd'
 import { CloudDownloadOutlined, ReloadOutlined } from '@ant-design/icons'
 import { api } from '../api'
 
@@ -39,41 +39,70 @@ export default function StartUpdate({ disabled, onStarted }) {
   }
 
   return (
-    <Card title="Start an update" className="h-full">
-      <Space direction="vertical" className="w-full">
-        <Typography.Text type="secondary">Updates published by the supplier:</Typography.Text>
-        <Space.Compact className="w-full">
+    <Card
+      title="Start an update"
+      className="h-full border-slate-200 shadow-sm rounded-xl"
+      extra={
+        <Tooltip title="Refresh supplier updates list">
+          <Button
+            id="reload-updates"
+            type="text"
+            size="small"
+            icon={<ReloadOutlined className="text-slate-500 hover:text-emerald-600" />}
+            onClick={loadUpdates}
+          >
+            Refresh
+          </Button>
+        </Tooltip>
+      }
+    >
+      <div className="flex flex-col gap-4">
+        <div>
+          <Typography.Text type="secondary" className="text-xs font-medium block mb-2">
+            Select a published update from supplier:
+          </Typography.Text>
           <Select
             id="update-select"
             className="w-full"
-            placeholder="Choose an update"
+            placeholder="Choose an update to import"
             value={selected}
             onChange={setSelected}
+            popupMatchSelectWidth={false}
             options={updates.map((u) => ({
               value: u.id,
               label: `${u.id} — ${u.description} (${u.total_batches} batches)`,
             }))}
           />
-          <Button id="reload-updates" icon={<ReloadOutlined />} onClick={loadUpdates} />
-        </Space.Compact>
-        {error && <Typography.Text type="danger">{error}</Typography.Text>}
+        </div>
+
+        {error && (
+          <Typography.Text type="danger" className="text-xs">
+            {error}
+          </Typography.Text>
+        )}
+
         <Button
           id="start-update"
           type="primary"
           icon={<CloudDownloadOutlined />}
+          size="middle"
           block
           disabled={!selected || disabled}
           loading={loading}
           onClick={start}
+          className="mt-1 shadow-sm font-medium"
         >
           Start update
         </Button>
+
         {disabled && (
-          <Typography.Text type="secondary" className="text-xs">
-            Finish, resume or abandon the current update before starting a new one.
-          </Typography.Text>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-2.5">
+            <Typography.Text type="warning" className="text-xs block leading-relaxed">
+              ⚠️ An update is currently in progress or interrupted. Please finish, resume, or abandon it before starting a new one.
+            </Typography.Text>
+          </div>
         )}
-      </Space>
+      </div>
     </Card>
   )
 }

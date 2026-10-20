@@ -23,8 +23,13 @@ export default function RunDrawer({ run, onClose }) {
   }))
 
   return (
-    <Drawer open width={860} onClose={onClose} title={`Update #${run.id} — ${run.supplier_update_id}`}>
-      <Descriptions size="small" column={2} bordered>
+    <Drawer
+      open
+      width={typeof window !== 'undefined' && window.innerWidth < 860 ? '100%' : 780}
+      onClose={onClose}
+      title={`Update #${run.id} — ${run.supplier_update_id}`}
+    >
+      <Descriptions size="small" column={{ xs: 1, sm: 2 }} bordered>
         <Descriptions.Item label="Status">
           <RunStatusTag status={run.status} />
         </Descriptions.Item>
@@ -40,10 +45,13 @@ export default function RunDrawer({ run, onClose }) {
       <Typography.Title level={5} className="!mt-6">
         What changed
       </Typography.Title>
-      <Segmented options={options} value={filter} onChange={setFilter} className="mb-3" />
+      <div className="overflow-x-auto pb-2">
+        <Segmented options={options} value={filter} onChange={setFilter} className="mb-3" />
+      </div>
       <Table
         rowKey="id"
         size="small"
+        scroll={{ x: 600 }}
         dataSource={shown}
         pagination={{ pageSize: 12 }}
         columns={[
