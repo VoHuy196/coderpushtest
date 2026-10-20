@@ -1,4 +1,9 @@
-app = 'coderpushtest'
+# fly.toml app configuration file generated for coderpushtest-thhohw on 2026-10-20T06:31:56Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'coderpushtest-thhohw'
 primary_region = 'sin'
 
 [build]
@@ -15,3 +20,4 @@ primary_region = 'sin'
   memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
+  memory_mb = 512
