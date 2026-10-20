@@ -174,27 +174,6 @@ go test -v ./internal/catalog ./internal/importer
 
 ---
 
-## Demonstration Scenarios (3–5 Minute Demo)
-
-You can demonstrate all key assessment requirements through the Web UI:
-
-1. **Clean Import & Changes:**
-   - Select `NW-2025-09-01` and click **Start Update**.
-   - Notice the batch progress bar updating live.
-   - Click **Details** to see the change log (+11 created, 1 duplicate skipped, 1 malformed record recorded as a Problem).
-2. **Duplicate & Stale Protection:**
-   - Re-import `NW-2025-09-01`: 0 new records created; all records are skipped as duplicates.
-   - Run `NW-2025-09-08` (weekly updates with new prices and withdrawals).
-   - Run `NW-2025-09-05` (an older batch arriving out of order): newer prices and withdrawn products are untouched.
-3. **Outage Survival & Resumption:**
-   - Select `NW-2025-09-15` (6 batches).
-   - In the header, toggle **Simulate Supplier Outage (503)** to `OFFLINE` during batch processing.
-   - The run gracefully halts as `Interrupted`. The catalog still retains all products from prior batches.
-   - Toggle the supplier back to `ONLINE`, click **Resume**, and watch the update continue from the exact checkpoint to `Completed`.
-4. **Problem Resolution:**
-   - Switch to the **Problems** tab to see invalid records and network errors.
-   - Click **Mark resolved** on any item to resolve it.
-
 ---
 
 ## Assumptions
