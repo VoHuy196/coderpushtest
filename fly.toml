@@ -1,6 +1,6 @@
-# fly.toml app configuration file generated for coderpushtest-thhohw on 2026-10-20T06:31:56Z
+# fly.toml app configuration file generated for coderpushtest-thhohw on 2026-10-20T14:10:39Z
 #
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+# See https://docs.fly.io/reference/configuration for information about how to use this file.
 #
 
 app = 'coderpushtest-thhohw'
@@ -9,11 +9,11 @@ primary_region = 'sin'
 [build]
 
 [http_service]
-  internal_port = 8080
+  internal_port = 8086
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
-  min_machines_running = 0
+  min_machines_running = 1
   processes = ['app']
 
 [[vm]]
