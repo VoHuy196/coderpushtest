@@ -1,146 +1,138 @@
-# Video Demo Script (3–5 Minutes)
-## Supplier Catalog Updates Assessment
+# Kịch Bản Quay Video Demo (3–5 Phút)
+## Bài Đánh Giá: Cập Nhật Danh Mục Nhà Cung Cấp (Supplier Catalog Updates)
 
-Tài liệu này hướng dẫn chi tiết từng bước để quay video demo (3–5 phút) nộp bài đánh giá. Bao gồm: **chuẩn bị trước khi quay**, **thời gian bấm giờ**, **thao tác trên màn hình**, và **lời thoại (Voiceover script bằng tiếng Anh & ghi chú tiếng Việt)**.
+Tài liệu này là kịch bản thoại **100% bằng tiếng Việt**, được viết theo văn phong tự nhiên, rõ ràng, dễ đọc khi đang quay màn hình. Bạn chỉ cần bật phần mềm quay màn hình, làm theo từng thao tác và đọc theo lời thoại tương ứng.
 
 ---
 
-## 1. Chuẩn bị trước khi bấm REC (Bật quay)
+## 1. Chuẩn bị trước khi bấm Quay (REC)
 
-1. **Reset Database sạch (để bắt đầu từ đầu):**
-   Mở PowerShell tại thư mục dự án và chạy:
+1. **Làm sạch database (để bắt đầu từ trạng thái mới tinh):**
+   Mở terminal tại thư mục dự án và chạy:
    ```powershell
    Remove-Item -Force -ErrorAction SilentlyContinue catalog.db, catalog.db-shm, catalog.db-wal
    ```
 2. **Khởi động 2 service:**
-   - **Terminal 1:**
+   - **Terminal 1 (Fake Supplier):**
      ```powershell
      .\bin\fakesupplier.exe -addr :8081 -delay 500ms
      ```
-   - **Terminal 2:**
+   - **Terminal 2 (Server chính):**
      ```powershell
      .\bin\server.exe -addr :8080 -supplier http://localhost:8081 -static web/dist
      ```
 3. **Mở trình duyệt:**
-   - Mở sẵn tab `http://localhost:8080` (Giao diện chính).
-   - Mở sẵn 1 cửa sổ Terminal thứ 3 để sẵn sàng gõ lệnh `go test` ở phần cuối.
-4. **Phần mềm quay màn hình:** Dùng OBS Studio, Loom, hoặc phím tắt Windows `Win + Alt + R` (Xbox Game Bar).
+   - Mở tab: `http://localhost:8080` (Phóng to cỡ chữ khoảng 110% cho rõ nét).
+   - Mở sẵn 1 cửa sổ Terminal thứ 3 để cuối video gõ lệnh test.
 
 ---
 
-## 2. Kịch bản chi tiết theo thời gian (Timeline)
+## 2. Kịch bản chi tiết & Lời thoại tiếng Việt
 
-### ⏱️ Phần 1: Giới thiệu tổng quan (0:00 – 0:40)
-* **Màn hình:** Quay tab giao diện `http://localhost:8080`.
-* **Thao tác:** Rê chuột nhẹ qua 3 Card thống kê (Active Products: 0, Withdrawn: 0, Problems: 0) và thanh Header.
-* **Lời thoại (Voiceover):**
-  > "Hello everyone. Today I'm demonstrating my solution for the Supplier Catalog Updates assessment built in Go, SQLite, and a React Ant Design dashboard.
+### ⏱️ Phần 1: Giới thiệu dự án (0:00 – 0:40)
+* **Thao tác màn hình:** Quay toàn cảnh trang `http://localhost:8080`. Rê chuột qua 3 thẻ thống kê ở trên cùng và công tắc Outage ở thanh header.
+* **Lời thoại nói:**
+  > "Xin chào mọi người. Hôm nay mình xin demo dự án giải quyết bài toán đồng bộ danh mục sản phẩm từ nhà cung cấp, được xây dựng bằng ngôn ngữ Go, cơ sở dữ liệu SQLite và giao diện web React Ant Design.
   >
-  > The system maintains a local copy of a supplier's catalog. It solves 3 key challenges:
-  > 1. Resilient batch imports that survive outages and application restarts without losing completed work.
-  > 2. Idempotent versioning based on `updated_at` timestamps, ensuring out-of-order or duplicate records never overwrite newer data.
-  > 3. Tombstone preservation so withdrawn products are never accidentally brought back to life."
+  > Hệ thống này giải quyết trọn vẹn 3 yêu cầu cốt lõi của đề bài:
+  > Thứ nhất là khả năng chống chịu sự cố: import theo từng batch an toàn, nếu mất mạng hay sập ứng dụng giữa chừng thì không làm mất dữ liệu đã lưu và có thể tiếp tục chạy lại.
+  > Thứ hai là cơ chế versioning dựa trên thời gian `updated_at`: dữ liệu đến trễ hoặc đến sai thứ tự sẽ không thể ghi đè dữ liệu mới hơn, và việc import lặp lại nhiều lần sẽ không bao giờ sinh ra sản phẩm trùng lặp.
+  > Thứ ba là cơ chế tombstone: sản phẩm đã ngừng bán sẽ được lưu vết để không bao giờ bị các bản cập nhật cũ hồi sinh lại."
 
 ---
 
-### ⏱️ Phần 2: Import bản cập nhật đầu tiên & Xem Thay đổi / Problems (0:40 – 1:30)
-* **Màn hình:** Box "Start an update".
-* **Thao tác:**
-  1. Trong dropdown, chọn: `NW-2025-09-01 — Initial full catalog (3 batches)`.
-  2. Bấm nút **Start update**.
-  3. Chỉ vào thanh progress bar đang chạy: Batch 1/3, 2/3, 3/3 -> Chuyển sang tag xanh **Completed**.
-  4. Bấm nút **Details** ở dòng Update #1.
-  5. Trong Drawer hiện ra, bấm qua các tab filter `created (11)`, `skipped (1)`, `invalid (1)`.
-  6. Đóng Drawer, bấm sang Tab **Problems (1)** ở màn hình chính.
-* **Lời thoại (Voiceover):**
-  > "First, let's start the initial catalog update: `NW-2025-09-01`.
-  > As you can see, batches are processed asynchronously with live progress.
+### ⏱️ Phần 2: Chạy bản cập nhật đầu tiên & Triage lỗi (0:40 – 1:35)
+* **Thao tác màn hình:**
+  1. Trong hộp chọn "Start an update", chọn: `NW-2025-09-01 — Initial full catalog (3 batches)`.
+  2. Bấm nút màu xanh **Start update**.
+  3. Thanh tiến trình chạy qua từng batch: 1/3, 2/3, 3/3 và chuyển thành tag xanh **Completed**.
+  4. Bấm nút **Details** ở dòng Update #1 để mở thanh chi tiết bên phải.
+  5. Bấm vào các nút lọc: `created (11)`, `skipped (1)`, `invalid (1)`.
+  6. Đóng thanh chi tiết, bấm sang tab **Problems (1)** ở màn hình chính.
+* **Lời thoại nói:**
+  > "Bây giờ, mình sẽ bắt đầu với bản cập nhật đầu tiên: `NW-2025-09-01`.
+  > Quá trình import diễn ra bất đồng bộ và thanh tiến trình hiển thị trực tiếp theo từng batch.
   >
-  > When it completes, we can click **Details** to see the full change log:
-  > - 11 products were created.
-  > - 1 repeated record was safely skipped.
-  > - And 1 malformed record without a name was caught.
+  > Khi hoàn thành, mình bấm vào nút **Details** để xem toàn bộ lịch sử thay đổi:
+  > - Đã có 11 sản phẩm mới được tạo thành công.
+  > - Có 1 bản ghi bị trùng lặp trong đợt gửi này được hệ thống tự động phát hiện và bỏ qua (skip).
+  > - Đặc biệt, có 1 sản phẩm bị thiếu tên đã được phát hiện là không hợp lệ.
   >
-  > Under the **Problems** tab, notice this invalid record is quarantined for staff attention rather than breaking the entire batch or crashing the import."
+  > Ở tab **Problems**, bản ghi lỗi này được giữ lại thành một sự cố riêng biệt để nhân viên có thể kiểm tra và xử lý, thay vì làm sập toàn bộ đợt cập nhật hay làm gián đoạn các sản phẩm khác."
 
 ---
 
-### ⏱️ Phần 3: Chống trùng lặp (Idempotency) & Bảo vệ dữ liệu mới (1:30 – 2:30)
-* **Màn hình:** Form Start update & Bảng Runs.
-* **Thao tác:**
-  1. Trong dropdown, chọn lại chính `NW-2025-09-01` một lần nữa -> Bấm **Start update**.
-  2. Chờ hoàn thành: Chỉ vào số liệu `+0 created, ~0 updated, skip 12`.
-  3. Tiếp theo, chọn bản update tiếp theo `NW-2025-09-08 — Weekly changes (3 batches)` -> Bấm **Start update**.
-  4. Chờ hoàn thành: Chỉ vào số liệu có cả `updated`, `withdrawn` và sản phẩm chair được sửa tên (tự động resolve problem cũ).
-  5. **QUAN TRỌNG:** Chọn bản cập nhật cũ đến muộn `NW-2025-09-05 — Mid-week corrections (delivered late)` -> Bấm **Start update**.
-  6. Chờ xong, mở **Details**: Chỉ vào các dòng ghi chú `older than stored data; skipped`.
-  7. Bấm sang Tab **Local Catalog**, tìm kiếm `NW-STOVE-MINI` -> Vẫn là `withdrawn`, không bị hồi sinh.
-* **Lời thoại (Voiceover):**
-  > "Now, let's test idempotency. If we import `NW-2025-09-01` a second time: zero duplicates are created, and all records are skipped because their timestamp matches stored data.
+### ⏱️ Phần 3: Chống trùng lặp & Bảo vệ dữ liệu mới (1:35 – 2:40)
+* **Thao tác màn hình:**
+  1. Ở ô chọn update, chọn lại chính `NW-2025-09-01` một lần nữa -> Bấm **Start update**.
+  2. Khi chạy xong, chỉ vào kết quả: `+0 created, ~0 updated, skip 12`.
+  3. Tiếp theo, chọn bản `NW-2025-09-08 — Weekly changes (3 batches)` -> Bấm **Start update**.
+  4. Chờ chạy xong, mở Details cho thấy: sản phẩm ghế xếp đã được nhà cung cấp bổ sung tên và tự động đóng problem cũ, kèm theo lệnh ngừng bán sản phẩm bếp mini `NW-STOVE-MINI`.
+  5. **BƯỚC QUAN TRỌNG:** Chọn bản cập nhật cũ gửi muộn: `NW-2025-09-05 — Mid-week corrections (delivered late)` -> Bấm **Start update**.
+  6. Mở **Details** của đợt này: Chỉ vào các dòng ghi chú `older than stored data; skipped`.
+  7. Bấm sang tab **Local Catalog**, gõ tìm kiếm `NW-STOVE-MINI`: Sản phẩm vẫn giữ trạng thái `withdrawn`, không hề bị chuyển lại thành active.
+* **Lời thoại nói:**
+  > "Tiếp theo, mình sẽ kiểm tra tính toàn vẹn dữ liệu. Nếu nhân viên lỡ bấm import lại đúng bản cập nhật `09-01` này lần thứ hai: hệ thống hoàn toàn không tạo thêm sản phẩm trùng lặp nào, mà toàn bộ các dòng đều được skip vì thời gian không mới hơn dữ liệu đang có.
   >
-  > Next, we run `NW-2025-09-08` which applies weekly price changes and marks `NW-STOVE-MINI` as withdrawn.
+  > Giờ mình sẽ chạy bản cập nhật tuần tiếp theo, ngày `09-08`. Bản này cập nhật giá mới và thực hiện ngừng bán sản phẩm bếp mini `NW-STOVE-MINI`.
   >
-  > Now, what if an older update, `NW-2025-09-05`, arrives late and out of order?
-  > Let's import it. Notice in the change log: the late update cannot overwrite newer prices, and it CANNOT restore the withdrawn stove. The stove remains withdrawn because our tombstone timestamp guards against older data."
+  > Tình huống phức tạp đặt ra là: điều gì xảy ra nếu một bản cập nhật cũ hơn, ví dụ ngày `09-05`, lại bị gửi đến muộn sau đó?
+  > Mình sẽ tiến hành import bản `09-05` này. Nhìn vào lịch sử thay đổi: hệ thống từ chối các mức giá cũ và tuyệt đối KHÔNG hồi sinh chiếc bếp mini đã bị ngừng bán trước đó. Chiếc bếp vẫn ở trạng thái withdrawn vì cơ chế tombstone đã ghi nhớ mốc thời gian rút bán mới hơn."
 
 ---
 
-### ⏱️ Phần 4: Mô phỏng sự cố mạng (Outage), Không mất dữ liệu & Resume (2:30 – 3:45)
-* **Màn hình:** Header & Start update.
-* **Thao tác:**
-  1. Chọn bản update lớn `NW-2025-09-15 — Autumn collection (6 batches)`.
+### ⏱️ Phần 4: Sự cố mất mạng & Tiếp tục cập nhật (Resume) (2:40 – 3:50)
+* **Thao tác màn hình:**
+  1. Chọn bản cập nhật lớn: `NW-2025-09-15 — Autumn collection (6 batches)`.
   2. Bấm **Start update**.
-  3. Khi thanh tiến trình đang chạy được khoảng batch 2/6:
-     - Gạt ngay công tắc trên Header: **"Simulate Supplier Outage (503)" sang OFFLINE**.
-  4. Thanh tiến trình dừng lại, chuyển sang tag vàng **Interrupted** với thông báo lỗi HTTP 503.
-  5. Bấm tab **Local Catalog**: Cho người xem thấy các sản phẩm từ batch 1 và 2 vẫn còn nguyên vẹn trong database, không bị mất mát.
-  6. Gạt công tắc lại sang **ONLINE**.
-  7. Bấm nút xanh **Resume** ở dòng Update bị Interrupted.
-  8. Thanh tiến trình chạy tiếp tục từ batch 3, 4, 5, 6 -> **Completed**.
-* **Lời thoại (Voiceover):**
-  > "Now let's test fault tolerance during an outage or application interruption.
-  > I'll start `NW-2025-09-15` which has 6 batches.
+  3. Khi thanh tiến trình đang chạy đến khoảng batch 2/6:
+     - Gạt công tắc ở thanh Header: **"Simulate Supplier Outage (503)" sang chế độ OFFLINE**.
+  4. Thanh tiến trình dừng lại, chuyển sang tag màu vàng cam: **Interrupted** kèm thông báo lỗi HTTP 503.
+  5. Bấm vào tab **Local Catalog**: Cho thấy các sản phẩm thuộc batch 1 và batch 2 đã commit vẫn nằm nguyên vẹn trong danh mục, không hề bị mất mát hay rollback toàn bộ catalog.
+  6. Gạt công tắc Outage trở lại **ONLINE**.
+  7. Bấm vào nút màu xanh **Resume** ở dòng update đang bị Interrupted.
+  8. Tiến trình tự động chạy tiếp từ batch 3, 4, 5, 6 cho đến khi thành công chuyển sang **Completed**.
+* **Lời thoại nói:**
+  > "Bây giờ là tính năng quan trọng nhất: khả năng chịu lỗi khi mất mạng hoặc tắt ứng dụng.
+  > Mình sẽ bắt đầu import bản `09-15`, bản này có tổng cộng 6 batches.
   >
-  > While it's running, I'll toggle our simulated supplier outage to OFFLINE.
-  > The update halts cleanly with the status **Interrupted**. 
-  > Notice that:
-  > - The partial update is NEVER reported as completed.
-  > - The catalog is NOT erased: all products committed up to batch 2 are completely safe in SQLite because each batch is its own transaction.
+  > Trong lúc hệ thống đang chạy batch 2, mình sẽ giả lập sự cố mất kết nối tới nhà cung cấp bằng công tắc Outage này.
+  > Ngay lập tức, đợt cập nhật dừng lại một cách an toàn và chuyển trạng thái thành **Interrupted**. Đề bài yêu cầu bản cập nhật dở dang tuyệt đối không được báo là hoàn thành, và hệ thống đã tuân thủ đúng yêu cầu này.
+  > Đồng thời, toàn bộ sản phẩm của các batch 1 và 2 đã lưu trước đó vẫn còn nguyên vẹn trong cơ sở dữ liệu SQLite vì mỗi batch được cam kết trong một transaction độc lập.
   >
-  > Once the supplier is back ONLINE, staff simply clicks **Resume**.
-  > The worker picks up right from batch 3 without repeating prior work, and completes successfully."
+  > Khi nhà cung cấp có mạng trở lại, nhân viên chỉ việc bấm vào nút **Resume**.
+  > Hệ thống tự động bắt đầu lại chính xác từ batch thứ 3 mà không cần làm lại từ đầu hay làm trùng dữ liệu, và kết thúc trọn vẹn ở trạng thái Completed."
 
 ---
 
-### ⏱️ Phần 5: CLI & Automated Tests (3:45 – 4:30)
-* **Màn hình:** Chuyển sang màn hình Terminal.
-* **Thao tác:**
-  1. Gõ lệnh CLI xem catalog:
-     ```bash
+### ⏱️ Phần 5: Công cụ dòng lệnh (CLI) & Chạy Test tự động (3:50 – 4:30)
+* **Thao tác màn hình:**
+  1. Chuyển sang cửa sổ Terminal thứ 3.
+  2. Gõ lệnh xem danh sách runs:
+     ```powershell
      .\bin\catalog.exe runs
      ```
-  2. Gõ lệnh chạy toàn bộ test tự động:
-     ```bash
+  3. Gõ lệnh chạy toàn bộ test tự động:
+     ```powershell
      go test -v ./internal/catalog ./internal/importer
      ```
-  3. Đợi vài giây cho toàn bộ test hiện chữ `PASS` màu xanh.
-* **Lời thoại (Voiceover):**
-  > "In addition to the Web UI, staff can also use the `catalog` CLI tool to inspect runs, changes, problems, or trigger updates directly in the terminal.
+  4. Đợi 1-2 giây cho tất cả các bài test in ra kết quả màu xanh `PASS`.
+* **Lời thoại nói:**
+  > "Bên cạnh giao diện web, nhân viên cũng có thể sử dụng công cụ dòng lệnh `catalog` để tra cứu lịch sử, giải quyết sự cố hoặc kích hoạt cập nhật trực tiếp trong terminal.
   >
-  > Finally, let's run our automated test suite.
-  > All 18 unit and integration tests pass, covering:
-  > - Pure timestamp merge rules and diffing.
-  > - Idempotent re-imports.
-  > - Out-of-order deliveries.
-  > - Mid-run outage recovery.
-  > - And application crash recovery after abrupt restarts.
+  > Cuối cùng, mình sẽ chạy toàn bộ bộ kiểm thử tự động của dự án.
+  > Tất cả 18 test case đều vượt qua tuyệt đối (PASS), kiểm tra chặt chẽ:
+  > - Các quy tắc merge thời gian và diff trường dữ liệu.
+  > - Tính bất biến khi import nhiều lần.
+  > - Xử lý dữ liệu đến sai thứ tự và bảo vệ sản phẩm đã ngừng bán.
+  > - Phục hồi sau khi mất mạng và phục hồi sau khi ứng dụng bị tắt đột ngột.
   >
-  > Thank you for watching!"
+  > Cảm ơn mọi người đã theo dõi buổi demo của mình!"
 
 ---
 
-## 3. Mẹo khi quay video
+## 3. Một số lưu ý nhỏ khi nói
 
-- **Âm thanh:** Dùng mic tai nghe rõ tiếng, không bị rè. Nói với tốc độ vừa phải, tự tin.
-- **Độ phân giải:** 1080p (1920x1080), phóng to trình duyệt tầm 110% (Ctrl + lăn chuột) để chữ và các tag trạng thái hiển thị rõ nét trên video.
-- **Upload:** Tải video lên YouTube (chế độ **Unlisted** - Không công khai) hoặc Google Drive (nhớ bật quyền *"Bất kỳ ai có đường liên kết đều có thể xem"*), sau đó chèn link video vào file `README.md` hoặc email nộp bài.
+- Giọng đọc rõ ràng, tự tin, không cần đọc quá nhanh.
+- Khi bấm nút trên màn hình, dừng chuột lại 1 giây ở kết quả để người xem video kịp nhìn thấy các con số thống kê hoặc các tag màu sắc (`Completed`, `Interrupted`, `Resume`).
+- Sau khi quay xong, bạn có thể upload video lên Google Drive (nhớ mở quyền *"Bất kỳ ai có liên kết đều xem được"*) hoặc YouTube (chế độ *"Không công khai" - Unlisted*) rồi gắn link vào email nộp bài.
