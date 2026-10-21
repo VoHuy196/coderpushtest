@@ -100,6 +100,10 @@ When a product record arrives with a supplier `updated_at`:
 
 ## Instructions to Run
 
+> **Tip (Reset Database):** To start fresh with a clean catalog at any time:
+> - **Windows (PowerShell):** `Remove-Item -Force -ErrorAction SilentlyContinue catalog.db, catalog.db-shm, catalog.db-wal`
+> - **Linux / macOS:** `rm -f catalog.db*`
+
 ### 1. Run the Fake Supplier
 In your first terminal, start the fake supplier service:
 ```bash
